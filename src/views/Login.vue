@@ -7,7 +7,7 @@
       <p>Login or creater an account to start using this app</p>
     </header>
 
-    <form @submit.prevent>
+    <form @submit.prevent="Login">
       <label>
         <span>Enter your Email</span>
         <input type="email" v-model="email" placeholder="test@test.com" />
@@ -29,17 +29,44 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const email = ref('');
 const password = ref('');
+
+const Login = async () => {
+  if (!email.value || !password.value) {
+    return alert('Please fill in all fields');
+  }
+
+  const res = await fetch('http://localhost:3333/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value,
+    }),
+  }).then((res) => res.json());
+
+  if (res.success) {
+    localStorage.setItem('token', res.token);
+    router.push('/');
+  } else {
+    alert(res.message);
+  }
+};
 </script>
 
 <style scoped>
 main {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
   height: 100vh;
   background-color: var(--primary);
   color: #fff;
@@ -49,7 +76,7 @@ header {
 }
 footer {
   background-color: #fff;
-  width: 100%;
+  width: 40%;
   color: var(--dark);
   text-align: center;
   padding: 1.5rem;
@@ -72,7 +99,7 @@ form {
   box-shadow: 0px -4px 12px 4px rgba(0, 0, 0, 0.16);
   color: var(--dark);
   padding: 4rem 1.5rem;
-  width: 100%;
+  width: 40%;
 }
 
 label {

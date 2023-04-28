@@ -1,11 +1,34 @@
 <template>
   <main>
     <h1>This is HOME Page</h1>
-    <button>Logout</button>
+    <button @click="Logout">Logout</button>
   </main>
 </template>
 
-<script></script>
+<script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const Logout = async () => {
+  const res = await fetch('http://localhost:3333/logout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      session_token: localStorage.getItem('token'),
+    }),
+  }).then((res) => res.json());
+
+  if (res.success) {
+    localStorage.removeItem('token');
+    router.push('/login');
+  } else {
+    alert(res.message);
+  }
+};
+</script>
 
 <style>
 main {

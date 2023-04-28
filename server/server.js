@@ -22,7 +22,7 @@ app.post('/register', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const resp = await client.password.create({
+    const resp = await client.passwords.create({
       email,
       password,
       session_duration_minutes: 60,
@@ -48,7 +48,7 @@ app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const resp = await client.password.authenticate({
+    const resp = await client.passwords.authenticate({
       email,
       password,
       session_duration_minutes: 60,
